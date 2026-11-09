@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Цветок Прекрасного Настроения 🌸</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Comfortaa:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            position: fixed;
+            user-select: none;
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #ffc3a0, #ffafbd, #e0c3fc, #ffd1ff);
+            background-size: 400% 400%;
+            animation: gradientBG 14s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Каркас под размеры смартфона */
+        .phone-frame {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            max-height: 850px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 20px;
+            overflow: hidden;
+        }
+
+        /* Сфера с цветком по центру */
+        .flower-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 50;
+            transition: transform 0.2s ease;
+            animation: floatFlower 4s ease-in-out infinite;
+            margin: auto 0;
+        }
+
+        .flower-container:hover {
+            transform: scale(1.08);
+        }
+
+        .flower-container:active {
+            transform: scale(0.94);
+        }
+
+        @keyframes floatFlower {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .flower-glow {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,117,140,0.35) 60%, transparent 80%);
+            border-radius: 50%;
+            animation: pulseGlow 3s infinite ease-in-out;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .flower-emoji {
+            font-size: 85px;
+            z-index: 2;
+            filter: drop-shadow(0 8px 16px rgba(255, 59, 107, 0.25));
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        .flower-emoji.pop {
+            transform: scale(1.35) rotate(15deg);
+        }
+
+        /* Звёздочки вокруг */
+        .little-stars {
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spinStars 15s linear infinite;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        @keyframes spinStars {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Кнопка музыки */
+        .music-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            z-index: 100;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            font-size: 20px; cursor: pointer;
+            box-shadow: 0 6px 15px rgba(255, 133, 162, 0.25);
+            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .music-btn.playing {
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            border-color: transparent;
+            box-shadow: 0 6px 18px rgba(255, 117, 140, 0.5);
+            animation: pulseMusic 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseMusic {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* Заголовок сверху */
+        .header-container {
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            margin-top: 10px;
+        }
+
+        .title-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 5px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 700;
+            color: #5c3b42; text-transform: uppercase;
+            letter-spacing: 1.2px; margin-bottom: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        #flowerTitle {
+            font-family: 'Comfortaa', cursive;
+            font-size: 19px; font-weight: 700;
+            color: #3d2229; text-shadow: 0 2px 8px rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(12px);
+            padding: 8px 16px; border-radius: 16px;
+            display: inline-block;
+            box-shadow: 0 6px 20px rgba(255, 133, 162, 0.12);
+        }
+
+        /* Карточка снизу */
+        .wish-card {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 24px; padding: 18px 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(255, 105, 135, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 50;
+            margin-bottom: 10px;
+        }
+
+        .wish-card.bounce {
+            transform: scale(1.03);
+        }
+
+        .card-sparkle { font-size: 22px; margin-bottom: 2px; }
+
+        .wish-number {
+            font-size: 11px; font-weight: 700;
+            color: #ff5277; text-transform: uppercase;
+            letter-spacing: 1.2px; margin-bottom: 6px;
+        }
+
+        .wish-text {
+            font-family: 'Caveat', cursive;
+            font-size: 24px; line-height: 1.25;
+            color: #331d23; min-height: 60px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .next-btn {
+            margin-top: 10px;
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            color: white; border: none;
+            padding: 10px 22px; border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700; font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+            transition: all 0.3s ease;
+        }
+        .next-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <button class="music-btn" id="musicToggleBtn" title="Музыка">🌸</button>
+
+        <header class="header-container">
+            <div class="title-badge">✦ Прикоснись к цветку ✦</div>
+            <h1 id="flowerTitle">Ты прекрасна, как этот цветок ✨</h1>
+        </header>
+
+        <div class="flower-container" id="flowerContainer" onclick="triggerNextAction()" title="Нажми, чтобы сменить цветок!">
+            <div class="flower-glow"></div>
+            <div class="flower-emoji" id="flowerEmoji">🌸</div>
+            <div class="little-stars">✨ ⭐ 🌟 💫 ✨</div>
+        </div>
+
+        <main class="wish-card" id="wishCard">
+            <div class="card-sparkle">🌷</div>
+            <div class="wish-number" id="wishStep">Комплимент №1</div>
+            <p class="wish-text" id="wishText">Нажмите на цветок, чтобы распустился твой первый комплимент!</p>
+            <button class="next-btn" id="nextWishBtn" onclick="triggerNextAction()">Еще комплимент ✨</button>
+        </main>
+    </div>
+
+    <!-- Аудио плеер для вашей песни song.mp3 -->
+    <audio id="bgSong" src="song.mp3" loop preload="auto"></audio>
+
+    <script>
+        const allFlowers = [
+            "🌸", "🌺", "🌹", "🌷", "🌻", "🌼", "💐", "💮", 
+            "🪷", "🪻", "🌾", "🌱", "🍀", "🌿", "🪴"
+        ];
+
+        const rawPrefixes = [
+            "Знаешь что?", "Напоминалочка:", "Секретная информация:", 
+            "Срочные новости:", "Честно говоря,", "Внимание:", 
+            "Просто факт:", "Кое-кто забыл,", "Официально заявляю:"
+        ];
+
+        const rawCores = [
+            " Ты сегодня выглядишь как главный источник эстетики в этой вселенной! 🌺",
+            " Твоя улыбка буквально способна отменить пасмурную погоду! ☀️",
+            " Ты прекрасна как этот цветок, только ещё ярче и в миллион раз милее! 🌸",
+            " Твоя харизма должна продаваться в баночках как эликсир счастья! ✨",
+            " Ты вдохновляешь просто фактом своего существования! 🕊️",
+            " В тебе столько шарма, что даже цветы рядом начинают стесняться! 🌷",
+            " Ты — тот самый человек, ради общения с которым хочется отложить телефон! 💖",
+            " Твой вайб — это уютный плед, чашка горячего какао и полный покой в душе! ☕",
+            " Твоя невероятная грация озаряет всё вокруг! 👑"
+        ];
+
+        const rawPostfixes = [
+            "Сияй дальше! ✨", "Помни об этом! 💖", "И пусть весь мир подождет! 👑", 
+            "Улыбнись прямо сейчас! 🌸", "Ты невероятная! 🌷", "Отличного тебе дня, королева! 👑"
+        ];
+
+        // Очереди без повторений для каждого элемента
+        let flowerPool = [...allFlowers].sort(() => Math.random() - 0.5);
+        let flowerIndex = 0;
+
+        let prefixPool = [...rawPrefixes].sort(() => Math.random() - 0.5);
+        let prefixIndex = 0;
+
+        let corePool = [...rawCores].sort(() => Math.random() - 0.5);
+        let coreIndex = 0;
+
+        let postfixPool = [...rawPostfixes].sort(() => Math.random() - 0.5);
+        let postfixIndex = 0;
+
+        let generatedCount = 0;
+
+        window.onload = function() {
+            const musicBtn = document.getElementById('musicToggleBtn');
+            const song = document.getElementById('bgSong');
+
+            if (musicBtn && song) {
+                musicBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    if (song.paused) {
+                        song.play().then(() => {
+                            musicBtn.classList.add('playing');
+                        }).catch(err => {
+                            console.log("Ошибка воспроизведения:", err);
+                        });
+                    } else {
+                        song.pause();
+                        musicBtn.classList.remove('playing');
+                    }
+                };
+            }
+        };
+
+        window.triggerNextAction = function() {
+            // 1. Смена цветка без повторений
+            const emojiEl = document.getElementById('flowerEmoji');
+            if (emojiEl) {
+                emojiEl.innerText = flowerPool[flowerIndex];
+                emojiEl.classList.add('pop');
+                setTimeout(() => {
+                    emojiEl.classList.remove('pop');
+                }, 300);
+
+                flowerIndex++;
+                if (flowerIndex >= flowerPool.length) {
+                    flowerPool = [...allFlowers].sort(() => Math.random() - 0.5);
+                    flowerIndex = 0;
+                }
+            }
+
+            // 2. Выбор префикса, текста и постфикса без повторений подряд
+            const p = prefixPool[prefixIndex];
+            prefixIndex++;
+            if (prefixIndex >= prefixPool.length) {
+                prefixPool = [...rawPrefixes].sort(() => Math.random() - 0.5);
+                prefixIndex = 0;
+            }
+
+            const c = corePool[coreIndex];
+            coreIndex++;
+            if (coreIndex >= corePool.length) {
+                corePool = [...rawCores].sort(() => Math.random() - 0.5);
+                coreIndex = 0;
+            }
+
+            const post = postfixPool[postfixIndex];
+            postfixIndex++;
+            if (postfixIndex >= postfixPool.length) {
+                postfixPool = [...rawPostfixes].sort(() => Math.random() - 0.5);
+                postfixIndex = 0;
+            }
+
+            generatedCount++;
+            const wishCard = document.getElementById('wishCard');
+            const wishText = document.getElementById('wishText');
+            const wishStep = document.getElementById('wishStep');
+
+            if (wishCard && wishText && wishStep) {
+                wishCard.classList.add('bounce');
+                setTimeout(() => wishCard.classList.remove('bounce'), 400);
+
+                wishStep.innerText = `Комплимент №${generatedCount}`;
+                wishText.innerText = `${p}${c} ${post}`;
+            }
+        };
+    </script>
+</body>
+</html>
