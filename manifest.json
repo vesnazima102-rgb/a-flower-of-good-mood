@@ -1,0 +1,11 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "mood flower",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "mower",
+  "start_url": "/",
+  "theme_color": "#ffffff"
+}
