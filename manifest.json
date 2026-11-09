@@ -2,11 +2,11 @@
   "background_color": "#ffffff",
   "dir": "ltr",
   "display": "standalone",
-  "name": "mood flower",
+  "name": "Floom",
   "orientation": "any",
-  "scope": "/",
   "short_name": "Floom",
   "start_url": "/",
   "theme_color": "#ffffff",
-  "description": "Интерактивное приложение с комплиментами"
+  "description": "Интерактивное приложение",
+  "id": "flower_app_mood"
 }
