@@ -1,11 +1,12 @@
 {
-  "name": "Цветок Настроения",
-  "short_name": "Цветок",
-  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#ff9a9e",
-  "theme_color": "#ff758c",
-  "description": "Интерактивное приложение с комплиментами и музыкой"
-  "id": "flower_app_123"
-  
+  "name": "mood flower",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Floom",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "description": "Интерактивное приложение с комплиментами"
 }
