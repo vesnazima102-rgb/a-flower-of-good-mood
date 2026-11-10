@@ -38,7 +38,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Каркас под размеры смартфона */
         .phone-frame {
             position: relative;
             width: 100%;
@@ -53,7 +52,6 @@
             overflow: hidden;
         }
 
-        /* Сфера с цветком по центру */
         .flower-container {
             position: relative;
             width: 170px;
@@ -109,7 +107,6 @@
             transform: scale(1.35) rotate(15deg);
         }
 
-        /* Орбита с искорками, крутящимися по дуге вокруг цветка */
         .little-stars {
             position: absolute;
             width: 210px;
@@ -134,7 +131,6 @@
             animation: counterSpin 12s linear infinite;
         }
 
-        /* Расставляем искорки по точкам окружности */
         .star-1 { top: 5%; left: 30%; }
         .star-2 { top: 30%; right: 5%; }
         .star-3 { bottom: 10%; left: 25%; }
@@ -160,6 +156,7 @@
             transition: all 0.3s ease;
             display: flex; align-items: center; justify-content: center;
         }
+
         .music-btn.playing {
             background: linear-gradient(45deg, #ff758c, #ff7eb3);
             border-color: transparent;
@@ -172,7 +169,6 @@
             50% { transform: scale(1.08); }
         }
 
-        /* Заголовок сверху */
         .header-container {
             width: 100%;
             text-align: center;
@@ -202,7 +198,6 @@
             box-shadow: 0 6px 20px rgba(255, 133, 162, 0.12);
         }
 
-        /* Карточка снизу */
         .wish-card {
             width: 100%;
             background: rgba(255, 255, 255, 0.88);
@@ -236,7 +231,6 @@
             margin-bottom: 14px; padding: 0 5px;
         }
 
-        /* Кнопка */
         .next-btn {
             width: 100%;
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
@@ -251,7 +245,6 @@
 
         .next-btn:active { transform: scale(0.96); }
 
-        /* Эффект падающих сердечек/лепестков при клике */
         .falling-heart {
             position: fixed;
             font-size: 20px;
@@ -269,8 +262,13 @@
 <body>
 
     <div class="phone-frame">
-        <!-- Кнопка фоновой музыки -->
-        <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Включить музыку">🎵</button>
+        <!-- Кнопка музыки -->
+        <button class="music-btn" id="musicBtn" onclick="toggleAudio()">🎵</button>
+
+        <!-- Аудиоплеер для вашего файла -->
+        <audio id="bgAudio" loop>
+            <source src="song.mp3" type="audio/mpeg">
+        </audio>
 
         <!-- Шапка -->
         <div class="header-container">
@@ -278,7 +276,7 @@
             <div id="flowerTitle">Счастливый Клевер</div>
         </div>
 
-        <!-- Центральный интерактивный цветок с крутящимися искорками по орбите -->
+        <!-- Цветок -->
         <div class="flower-container" id="flowerBox" onclick="triggerMagic(event)">
             <div class="flower-glow"></div>
             <div class="little-stars">
@@ -290,7 +288,7 @@
             <div class="flower-emoji" id="flowerEmoji">🍀</div>
         </div>
 
-        <!-- Карточка комплимента снизу -->
+        <!-- Комплимент -->
         <div class="wish-card" id="wishCard">
             <div class="card-sparkle">🌷</div>
             <div class="wish-number" id="wishNum">Комплимент №1</div>
@@ -329,7 +327,6 @@
             currentIndex = (currentIndex + 1) % wishes.length;
             const item = items[currentIndex % items.length];
 
-            // Анимация смены цветка и текста
             const emojiEl = document.getElementById('flowerEmoji');
             const titleEl = document.getElementById('flowerTitle');
             const textEl = document.getElementById('wishText');
@@ -353,7 +350,6 @@
         function triggerMagic(e) {
             nextWish();
 
-            // Создаем летящие сердечки/звездочки при клике на цветок
             const rect = document.getElementById('flowerBox').getBoundingClientRect();
             const x = rect.left + rect.width / 2;
             const y = rect.top + rect.height / 2;
@@ -372,53 +368,26 @@
             }
         }
 
-        // Простой синтезатор приятной расслабляющей мелодии при нажатии на музыку
-        let audioCtx = null;
+        /* Логика воспроизведения MP3 */
+        const audio = document.getElementById('bgAudio');
+        const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
-        let musicInterval = null;
 
-        function toggleMusic() {
-            const btn = document.getElementById('musicBtn');
+        function toggleAudio() {
             if (!isPlaying) {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                isPlaying = true;
-                btn.classList.add('playing');
-                btn.textContent = '🔊';
-                
-                // Простенькие нотки для нежной атмосферы
-                const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00];
-                musicInterval = setInterval(() => {
-                    playTone(notes[Math.floor(Math.random() * notes.length)]);
-                }, 900);
+                audio.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add('playing');
+                    musicBtn.textContent = '🔊';
+                }).catch(e => {
+                    console.log("Ошибка воспроизведения:", e);
+                });
             } else {
+                audio.pause();
                 isPlaying = false;
-                btn.classList.remove('playing');
-                btn.textContent = '🎵';
-                clearInterval(musicInterval);
+                musicBtn.classList.remove('playing');
+                musicBtn.textContent = '🎵';
             }
-        }
-
-        function playTone(freq) {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = 'sine';
-            osc.frequency.value = freq;
-            
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
-            
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.8);
         }
     </script>
 </body>
