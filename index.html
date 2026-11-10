@@ -109,24 +109,40 @@
             transform: scale(1.35) rotate(15deg);
         }
 
-        /* Звёздочки вокруг */
+        /* Орбита с искорками, крутящимися по дуге вокруг цветка */
         .little-stars {
             position: absolute;
-            width: 190px;
-            height: 190px;
-            font-size: 13px;
+            width: 210px;
+            height: 210px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: spinStars 15s linear infinite;
+            animation: spinStars 12s linear infinite;
             z-index: 3;
             pointer-events: none;
-            opacity: 0.8;
         }
 
         @keyframes spinStars {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        .orbit-star {
+            position: absolute;
+            font-size: 18px;
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.9));
+            animation: counterSpin 12s linear infinite;
+        }
+
+        /* Расставляем искорки по точкам окружности */
+        .star-1 { top: 5%; left: 30%; }
+        .star-2 { top: 30%; right: 5%; }
+        .star-3 { bottom: 10%; left: 25%; }
+        .star-4 { top: 60%; left: 2%; }
+
+        @keyframes counterSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
         }
 
         /* Кнопка музыки */
@@ -209,176 +225,201 @@
         .wish-number {
             font-size: 11px; font-weight: 700;
             color: #ff5277; text-transform: uppercase;
-            letter-spacing: 1.2px; margin-bottom: 6px;
+            letter-spacing: 1.5px; margin-bottom: 8px;
         }
 
         .wish-text {
             font-family: 'Caveat', cursive;
-            font-size: 24px; line-height: 1.25;
-            color: #331d23; min-height: 60px;
+            font-size: 24px; line-height: 1.35;
+            color: #2b181d; min-height: 70px;
             display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px; padding: 0 5px;
         }
 
+        /* Кнопка */
         .next-btn {
-            margin-top: 10px;
-            background: linear-gradient(45deg, #ff758c, #ff7eb3);
-            color: white; border: none;
-            padding: 10px 22px; border-radius: 50px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700; font-size: 12px;
+            width: 100%;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            border: none; border-radius: 16px;
+            padding: 13px; color: #fff;
+            font-size: 14px; font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
-            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.4);
+            transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .next-btn:active {
-            transform: scale(0.95);
+
+        .next-btn:active { transform: scale(0.96); }
+
+        /* Эффект падающих сердечек/лепестков при клике */
+        .falling-heart {
+            position: fixed;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 999;
+            animation: fallAnimation 1.2s ease-out forwards;
+        }
+
+        @keyframes fallAnimation {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120px) scale(1.4) rotate(45deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="phone-frame">
-        <button class="music-btn" id="musicToggleBtn" title="Музыка">🌸</button>
+        <!-- Кнопка фоновой музыки -->
+        <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Включить музыку">🎵</button>
 
-        <header class="header-container">
+        <!-- Шапка -->
+        <div class="header-container">
             <div class="title-badge">✦ Прикоснись к цветку ✦</div>
-            <h1 id="flowerTitle">Ты прекрасна, как этот цветок ✨</h1>
-        </header>
-
-        <div class="flower-container" id="flowerContainer" onclick="triggerNextAction()" title="Нажми, чтобы сменить цветок!">
-            <div class="flower-glow"></div>
-            <div class="flower-emoji" id="flowerEmoji">🌸</div>
-            <div class="little-stars">✨ ⭐ 🌟 💫 ✨</div>
+            <div id="flowerTitle">Счастливый Клевер</div>
         </div>
 
-        <main class="wish-card" id="wishCard">
+        <!-- Центральный интерактивный цветок с крутящимися искорками по орбите -->
+        <div class="flower-container" id="flowerBox" onclick="triggerMagic(event)">
+            <div class="flower-glow"></div>
+            <div class="little-stars">
+                <span class="orbit-star star-1">✨</span>
+                <span class="orbit-star star-2">⭐</span>
+                <span class="orbit-star star-3">🌟</span>
+                <span class="orbit-star star-4">💫</span>
+            </div>
+            <div class="flower-emoji" id="flowerEmoji">🍀</div>
+        </div>
+
+        <!-- Карточка комплимента снизу -->
+        <div class="wish-card" id="wishCard">
             <div class="card-sparkle">🌷</div>
-            <div class="wish-number" id="wishStep">Комплимент №1</div>
-            <p class="wish-text" id="wishText">Нажмите на цветок, чтобы распустился твой первый комплимент!</p>
-            <button class="next-btn" id="nextWishBtn" onclick="triggerNextAction()">Еще комплимент ✨</button>
-        </main>
+            <div class="wish-number" id="wishNum">Комплимент №1</div>
+            <div class="wish-text" id="wishText">Ты вдохновляешь просто фактом своего существования! 🕊️</div>
+            <button class="next-btn" onclick="nextWish()">
+                <span>Еще комплимент</span>
+                <span>✨</span>
+            </button>
+        </div>
     </div>
 
-    <!-- Аудио плеер для вашей песни song.mp3 -->
-    <audio id="bgSong" src="song.mp3" loop preload="auto"></audio>
-
     <script>
-        const allFlowers = [
-            "🌸", "🌺", "🌹", "🌷", "🌻", "🌼", "💐", "💮", 
-            "🪷", "🪻", "🌾", "🌱", "🍀", "🌿", "🪴"
+        const items = [
+            { emoji: '🍀', name: 'Счастливый Клевер' },
+            { emoji: '🌸', name: 'Нежная Сакура' },
+            { emoji: '🌹', name: 'Алая Роза' },
+            { emoji: '🌻', name: 'Солнечный Подсолнух' },
+            { emoji: '🌷', name: 'Утонченный Тюльпан' },
+            { emoji: '🌼', name: 'Ласковая Ромашка' },
+            { emoji: '🌺', name: 'Яркий Гибискус' }
         ];
 
-        const rawPrefixes = [
-            "Знаешь что?", "Напоминалочка:", "Секретная информация:", 
-            "Срочные новости:", "Честно говоря,", "Внимание:", 
-            "Просто факт:", "Кое-кто забыл,", "Официально заявляю:"
+        const wishes = [
+            "Ты вдохновляешь просто фактом своего существования! 🕊️",
+            "Твоя улыбка способна осветить даже самый хмурый день! ☀️",
+            "Рядом с тобой этот мир становится намного уютнее и добрее. ✨",
+            "В тебе столько невероятной красоты, тепла и света! 💖",
+            "Ты — настоящее сокровище, которое делает всё вокруг лучше! 🌸",
+            "Пусть сегодняшний день принесет тебе только радостные сюрпризы! 🎁",
+            "Твоя энергия и доброта заряжают всех вокруг! Продолжай сиять! ⭐"
         ];
 
-        const rawCores = [
-            " Ты сегодня выглядишь как главный источник эстетики в этой вселенной! 🌺",
-            " Твоя улыбка буквально способна отменить пасмурную погоду! ☀️",
-            " Ты прекрасна как этот цветок, только ещё ярче и в миллион раз милее! 🌸",
-            " Твоя харизма должна продаваться в баночках как эликсир счастья! ✨",
-            " Ты вдохновляешь просто фактом своего существования! 🕊️",
-            " В тебе столько шарма, что даже цветы рядом начинают стесняться! 🌷",
-            " Ты — тот самый человек, ради общения с которым хочется отложить телефон! 💖",
-            " Твой вайб — это уютный плед, чашка горячего какао и полный покой в душе! ☕",
-            " Твоя невероятная грация озаряет всё вокруг! 👑"
-        ];
+        let currentIndex = 0;
 
-        const rawPostfixes = [
-            "Сияй дальше! ✨", "Помни об этом! 💖", "И пусть весь мир подождет! 👑", 
-            "Улыбнись прямо сейчас! 🌸", "Ты невероятная! 🌷", "Отличного тебе дня, королева! 👑"
-        ];
+        function nextWish() {
+            currentIndex = (currentIndex + 1) % wishes.length;
+            const item = items[currentIndex % items.length];
 
-        // Очереди без повторений для каждого элемента
-        let flowerPool = [...allFlowers].sort(() => Math.random() - 0.5);
-        let flowerIndex = 0;
-
-        let prefixPool = [...rawPrefixes].sort(() => Math.random() - 0.5);
-        let prefixIndex = 0;
-
-        let corePool = [...rawCores].sort(() => Math.random() - 0.5);
-        let coreIndex = 0;
-
-        let postfixPool = [...rawPostfixes].sort(() => Math.random() - 0.5);
-        let postfixIndex = 0;
-
-        let generatedCount = 0;
-
-        window.onload = function() {
-            const musicBtn = document.getElementById('musicToggleBtn');
-            const song = document.getElementById('bgSong');
-
-            if (musicBtn && song) {
-                musicBtn.onclick = function(e) {
-                    e.stopPropagation();
-                    if (song.paused) {
-                        song.play().then(() => {
-                            musicBtn.classList.add('playing');
-                        }).catch(err => {
-                            console.log("Ошибка воспроизведения:", err);
-                        });
-                    } else {
-                        song.pause();
-                        musicBtn.classList.remove('playing');
-                    }
-                };
-            }
-        };
-
-        window.triggerNextAction = function() {
-            // 1. Смена цветка без повторений
+            // Анимация смены цветка и текста
             const emojiEl = document.getElementById('flowerEmoji');
-            if (emojiEl) {
-                emojiEl.innerText = flowerPool[flowerIndex];
-                emojiEl.classList.add('pop');
-                setTimeout(() => {
-                    emojiEl.classList.remove('pop');
-                }, 300);
+            const titleEl = document.getElementById('flowerTitle');
+            const textEl = document.getElementById('wishText');
+            const numEl = document.getElementById('wishNum');
+            const cardEl = document.getElementById('wishCard');
 
-                flowerIndex++;
-                if (flowerIndex >= flowerPool.length) {
-                    flowerPool = [...allFlowers].sort(() => Math.random() - 0.5);
-                    flowerIndex = 0;
+            emojiEl.classList.add('pop');
+            cardEl.classList.add('bounce');
+
+            setTimeout(() => {
+                emojiEl.textContent = item.emoji;
+                titleEl.textContent = item.name;
+                textEl.textContent = wishes[currentIndex];
+                numEl.textContent = `Комплимент №${currentIndex + 1}`;
+                
+                emojiEl.classList.remove('pop');
+                cardEl.classList.remove('bounce');
+            }, 150);
+        }
+
+        function triggerMagic(e) {
+            nextWish();
+
+            // Создаем летящие сердечки/звездочки при клике на цветок
+            const rect = document.getElementById('flowerBox').getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 4; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.textContent = ['✨', '💖', '🌸', '⭐'][Math.floor(Math.random() * 4)];
+                
+                const offsetX = (Math.random() - 0.5) * 80;
+                heart.style.left = `${x + offsetX}px`;
+                heart.style.top = `${y}px`;
+                
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1200);
+            }
+        }
+
+        // Простой синтезатор приятной расслабляющей мелодии при нажатии на музыку
+        let audioCtx = null;
+        let isPlaying = false;
+        let musicInterval = null;
+
+        function toggleMusic() {
+            const btn = document.getElementById('musicBtn');
+            if (!isPlaying) {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                isPlaying = true;
+                btn.classList.add('playing');
+                btn.textContent = '🔊';
+                
+                // Простенькие нотки для нежной атмосферы
+                const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00];
+                musicInterval = setInterval(() => {
+                    playTone(notes[Math.floor(Math.random() * notes.length)]);
+                }, 900);
+            } else {
+                isPlaying = false;
+                btn.classList.remove('playing');
+                btn.textContent = '🎵';
+                clearInterval(musicInterval);
             }
+        }
 
-            // 2. Выбор префикса, текста и постфикса без повторений подряд
-            const p = prefixPool[prefixIndex];
-            prefixIndex++;
-            if (prefixIndex >= prefixPool.length) {
-                prefixPool = [...rawPrefixes].sort(() => Math.random() - 0.5);
-                prefixIndex = 0;
-            }
-
-            const c = corePool[coreIndex];
-            coreIndex++;
-            if (coreIndex >= corePool.length) {
-                corePool = [...rawCores].sort(() => Math.random() - 0.5);
-                coreIndex = 0;
-            }
-
-            const post = postfixPool[postfixIndex];
-            postfixIndex++;
-            if (postfixIndex >= postfixPool.length) {
-                postfixPool = [...rawPostfixes].sort(() => Math.random() - 0.5);
-                postfixIndex = 0;
-            }
-
-            generatedCount++;
-            const wishCard = document.getElementById('wishCard');
-            const wishText = document.getElementById('wishText');
-            const wishStep = document.getElementById('wishStep');
-
-            if (wishCard && wishText && wishStep) {
-                wishCard.classList.add('bounce');
-                setTimeout(() => wishCard.classList.remove('bounce'), 400);
-
-                wishStep.innerText = `Комплимент №${generatedCount}`;
-                wishText.innerText = `${p}${c} ${post}`;
-            }
-        };
+        function playTone(freq) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.8);
+        }
     </script>
 </body>
 </html>
